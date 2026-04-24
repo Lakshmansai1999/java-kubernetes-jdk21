@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k3s-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k3s-app
+  template:
+    metadata:
+      labels:
+        app: k3s-app
+    spec:
+      containers:
+      - name: k3s-app
+        image: lakshmansai/k3s-app:latest
+        ports:
+        - containerPort: 8080
