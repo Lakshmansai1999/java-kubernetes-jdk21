@@ -17,3 +17,22 @@ spec:
         image: lakshmansai/k3s-app:latest
         ports:
         - containerPort: 8080
+
+        env:
+        - name: DB_URL
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_URL
+
+        - name: DB_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_USERNAME
+
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DB_PASSWORD
