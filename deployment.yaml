@@ -4,9 +4,17 @@ metadata:
   name: k3s-app
 spec:
   replicas: 1
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+
   selector:
     matchLabels:
       app: k3s-app
+
   template:
     metadata:
       labels:
@@ -15,6 +23,9 @@ spec:
       containers:
       - name: k3s-app
         image: lakshmansai/k3s-app:latest
+
+        imagePullPolicy: Always
+
         ports:
         - containerPort: 8080
 
@@ -36,3 +47,19 @@ spec:
             secretKeyRef:
               name: db-secret
               key: DB_PASSWORD
+
+        # 🔥 Liveness Probe (restart if broken)
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+
+        # 🔥 Readiness Probe (traffic control)
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 5
